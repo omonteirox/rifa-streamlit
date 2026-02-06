@@ -60,3 +60,22 @@ def format_number(n: int) -> str:
 def format_numbers_list(numbers: list[int]) -> str:
     """Formata lista de números para exibição (ex: '01, 07, 42')."""
     return ", ".join(format_number(n) for n in numbers)
+
+
+def render_footer() -> None:
+    """Renderiza o rodapé com créditos do desenvolvedor."""
+    st.markdown(
+        """
+        <div style="
+            text-align: center;
+            padding: 24px 0 12px;
+            margin-top: 40px;
+            border-top: 1px solid #333;
+            color: #888;
+            font-size: 0.8rem;
+        ">
+            Desenvolvido por: <strong>Gustavo Monteiro</strong>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )

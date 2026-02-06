@@ -5,6 +5,7 @@ import streamlit as st
 from utils.components import (
     format_number,
     format_numbers_list,
+    render_footer,
     render_legend,
     render_number_grid,
     render_pix_box,
@@ -81,6 +82,9 @@ def _show_reservation_form(raffle: dict, available_numbers: list[int]) -> None:
 
     with st.form("reserve_form"):
         buyer_name = st.text_input("Seu nome completo")
+        buyer_phone = st.text_input(
+            "Telefone com DDD", placeholder="(62) 99999-9999"
+        )
         proof_file = st.file_uploader(
             "Comprovante de pagamento (imagem)",
             type=["png", "jpg", "jpeg", "webp"],
@@ -90,18 +94,24 @@ def _show_reservation_form(raffle: dict, available_numbers: list[int]) -> None:
         )
 
         if submitted:
-            _handle_reservation(raffle, selected_nums, buyer_name, proof_file)
+            _handle_reservation(
+                raffle, selected_nums, buyer_name, buyer_phone, proof_file
+            )
 
 
 def _handle_reservation(
     raffle: dict,
     selected_nums: list[int],
     buyer_name: str,
+    buyer_phone: str,
     proof_file,
 ) -> None:
     """Valida e processa a reserva de números."""
     if not buyer_name.strip():
         st.error("Preencha seu nome.")
+        return
+    if not buyer_phone.strip():
+        st.error("Preencha seu telefone com DDD.")
         return
     if proof_file is None:
         st.error("Anexe o comprovante de pagamento.")
@@ -109,7 +119,10 @@ def _handle_reservation(
 
     with st.spinner("Enviando comprovante..."):
         proof_url = upload_proof(raffle["id"], selected_nums[0], proof_file)
-        reserve_tickets(raffle["id"], selected_nums, buyer_name.strip(), proof_url)
+        reserve_tickets(
+            raffle["id"], selected_nums, buyer_name.strip(),
+            buyer_phone.strip(), proof_url,
+        )
         _load_tickets.clear()
         _load_raffle.clear()
 
@@ -144,6 +157,8 @@ def main() -> None:
             st.warning("Todos os números já foram reservados ou confirmados!")
         else:
             _show_reservation_form(raffle, available)
+
+    render_footer()
 
 
 main()

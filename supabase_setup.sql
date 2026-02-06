@@ -23,6 +23,7 @@ create table if not exists public.tickets (
     number int not null,
     status text not null default 'available' check (status in ('available', 'reserved', 'confirmed')),
     buyer_name text,
+    buyer_phone text,
     proof_url text,
     reserved_at timestamptz,
     confirmed_at timestamptz,

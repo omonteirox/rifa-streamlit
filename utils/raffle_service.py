@@ -110,6 +110,7 @@ def reserve_tickets(
     raffle_id: str,
     numbers: list[int],
     buyer_name: str,
+    buyer_phone: str,
     proof_url: str,
 ) -> None:
     """Reserva uma lista de números para um comprador."""
@@ -120,6 +121,7 @@ def reserve_tickets(
             {
                 "status": "reserved",
                 "buyer_name": buyer_name,
+                "buyer_phone": buyer_phone,
                 "proof_url": proof_url,
                 "reserved_at": now,
             }
@@ -150,6 +152,7 @@ def reject_ticket(ticket_id: str) -> None:
         {
             "status": "available",
             "buyer_name": None,
+            "buyer_phone": None,
             "proof_url": None,
             "reserved_at": None,
         }
@@ -164,7 +167,7 @@ def reject_tickets_bulk(tickets: list[TicketDict]) -> int:
 
 
 def confirm_ticket_manual(
-    raffle_id: str, number: int, buyer_name: str
+    raffle_id: str, number: int, buyer_name: str, buyer_phone: str
 ) -> None:
     """Confirma um número diretamente (pagamento presencial)."""
     sb = get_supabase()
@@ -172,6 +175,7 @@ def confirm_ticket_manual(
         {
             "status": "confirmed",
             "buyer_name": buyer_name,
+            "buyer_phone": buyer_phone,
             "confirmed_at": _now_iso(),
         }
     ).eq("raffle_id", raffle_id).eq("number", number).execute()

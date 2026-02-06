@@ -152,6 +152,7 @@ def _render_ticket_expander(ticket: dict) -> None:
     label = f"Número {format_number(ticket['number'])} — {ticket.get('buyer_name', 'Sem nome')}"
     with st.expander(label, expanded=False):
         st.write(f"**Nome:** {ticket.get('buyer_name', '-')}")
+        st.write(f"**Telefone:** {ticket.get('buyer_phone', '-')}")
         st.write(f"**Reservado em:** {ticket.get('reserved_at', '-')}")
 
         proof = ticket.get("proof_url")
@@ -227,13 +228,16 @@ def _tab_manual(raffle: dict) -> None:
         options = [format_number(t["number"]) for t in available]
         selected = st.selectbox("Número", options)
         buyer = st.text_input("Nome do comprador")
+        phone = st.text_input("Telefone com DDD", placeholder="(62) 99999-9999")
 
         if st.form_submit_button("Confirmar número", use_container_width=True):
             if not buyer.strip():
                 st.error("Preencha o nome do comprador.")
+            elif not phone.strip():
+                st.error("Preencha o telefone com DDD.")
             else:
                 num = int(selected)
-                confirm_ticket_manual(raffle["id"], num, buyer.strip())
+                confirm_ticket_manual(raffle["id"], num, buyer.strip(), phone.strip())
                 st.success(f"Número {format_number(num)} confirmado para {buyer.strip()}!")
                 st.rerun()
 
@@ -325,8 +329,8 @@ def _render_sales_table(all_tickets: list[dict]) -> None:
 
     import pandas as pd
 
-    columns = ["number", "status", "buyer_name", "reserved_at", "confirmed_at"]
-    labels = ["Número", "Status", "Nome", "Reservado em", "Confirmado em"]
+    columns = ["number", "status", "buyer_name", "buyer_phone", "reserved_at", "confirmed_at"]
+    labels = ["Número", "Status", "Nome", "Telefone", "Reservado em", "Confirmado em"]
     df = pd.DataFrame(sold)[columns]
     df.columns = labels
     st.dataframe(df, use_container_width=True, hide_index=True)

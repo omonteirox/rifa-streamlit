@@ -208,7 +208,7 @@ def _generate_tickets(raffle_id: str, total: int) -> None:
     sb = get_supabase()
     tickets = [
         {"raffle_id": raffle_id, "number": i, "status": "available"}
-        for i in range(total)
+        for i in range(1, total + 1)
     ]
     for start in range(0, len(tickets), TICKET_BATCH_SIZE):
         chunk = tickets[start : start + TICKET_BATCH_SIZE]

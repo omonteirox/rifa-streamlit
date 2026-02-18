@@ -41,12 +41,15 @@ def _show_raffle_header(raffle: dict) -> None:
     """Exibe título, descrição e dados PIX da rifa."""
     st.markdown(f"### {raffle['title']}")
     # Exibe a imagem do prêmio se existir
+    # Exibe a imagem do prêmio se existir, centralizada e responsiva
     if os.path.exists("assets/premio.png"):
-        st.image(
-            "assets/premio.png",
-            caption="🏆 Prêmio: Sua chance de ganhar!",
-            use_column_width=True
-        )
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            st.image(
+                "assets/premio.png",
+                caption="🏆 Prêmio: Sua chance de ganhar!",
+                use_container_width=True
+            )
 
     if raffle.get("description"):
         st.markdown(raffle["description"])

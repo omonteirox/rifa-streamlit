@@ -1,5 +1,6 @@
 """Página principal da Rifa Amiga — exibição pública."""
 
+import os
 import streamlit as st
 
 from utils.components import (
@@ -39,6 +40,14 @@ def _load_tickets(raffle_id: str):
 def _show_raffle_header(raffle: dict) -> None:
     """Exibe título, descrição e dados PIX da rifa."""
     st.markdown(f"### {raffle['title']}")
+    # Exibe a imagem do prêmio se existir
+    if os.path.exists("assets/premio.png"):
+        st.image(
+            "assets/premio.png",
+            caption="🏆 Prêmio: Sua chance de ganhar!",
+            use_column_width=True
+        )
+
     if raffle.get("description"):
         st.markdown(raffle["description"])
 
